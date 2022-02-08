@@ -1,3 +1,16 @@
 {
-  "tasks": []
+  "tasks": [
+    {
+      "text": "Submit homework",
+      "day": "May 7th at 9pm",
+      "reminder": true,
+      "id": 1
+    },
+    {
+      "text": "Coffee house",
+      "day": "Mar 7th  at 8:00pm",
+      "reminder": false,
+      "id": 2
+    }
+  ]
 }
