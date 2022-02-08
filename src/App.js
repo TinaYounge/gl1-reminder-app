@@ -23,39 +23,56 @@ function App() {
   };
   //Add task
   const addTask = async (task) => {
-    const res = await fetch("http://localhost:5000/tasks",{
-      method:"POST",
-      headers:{
-        "Content-type":"application/json"
+    const res = await fetch("http://localhost:5000/tasks", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
       },
       body: JSON.stringify(task),
     });
-const data  = await res.json()
-setTasks([...tasks,data])
-  
+    const data = await res.json();
+    setTasks([...tasks, data]);
   };
-  //Delete task
-  const deleteTask = async (id) => {
-    await fetch(`http://localhost:5000/tasks/${id}`, { method: "DELETE" });
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
-  //Fetch Task 
+  // Delete task
+    const deleteTask = async (id) => {
+      const res = await fetch(`http://localhost:5000/tasks/${id}`, { method: "DELETE" });
+   //We should control the response status to decide if we will change the state or not.
+   res.status === 200
+   ? setTasks(tasks.filter((task) => task.id !== id))
+   : alert('Error Deleting This Task')
+      // setTasks(tasks.filter((task) => task.id !== id));
+
+    };
+
+ 
+  //Fetch Task
   const fetchTask = async (id) => {
-    const res = await fetch(`http://localhost:5000/tasks${id}`);
+    const res = await fetch(`http://localhost:5000/tasks/${id}`);
     const data = await res.json();
     return data;
   };
 
-  //Toggle Reminder
-  const toggleReminder = (id) => {
-   
+  // Toggle Reminder
+  const toggleReminder = async (id) => {
+    const taskToToggle = await fetchTask(id);
+    const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
+
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(updTask),
+    });
+
+    const data = await res.json();
+
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task
+        task.id === id ? { ...task, reminder: data.reminder } : task
       )
     );
   };
-
   return (
     <div className="container">
       <Header
